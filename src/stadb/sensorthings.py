@@ -10,7 +10,7 @@ created: 4/10/23
 
 from .postgresql import PgDatabaseConnector
 from .logger import LoggerSuperclass
-from .utils import reverse_dictionary, dataframe_to_dict, run_subprocess, merge_dataframes_by_columns
+from .utils import reverse_dictionary, dataframe_to_dict, run_subprocess, merge_dataframes_by_columns, slice_dataframes
 import json
 import pandas as pd
 import numpy as np
@@ -54,6 +54,7 @@ class SensorThingsApiDB(PgDatabaseConnector, LoggerSuperclass):
         :param logger:
         """
         PgDatabaseConnector.__init__(self, host, port, db_name, db_user, db_password, logger)
+        self.host = host
         LoggerSuperclass.__init__(self, logger, "STA DB")
         self.info("Initialize database connector...")
         self.__sensor_properties = {}
@@ -264,8 +265,7 @@ class SensorThingsApiDB(PgDatabaseConnector, LoggerSuperclass):
         """
         Run a single value from a query
         """
-        self.exec_query(query, debug=debug)
-        response = self.cursor.fetchall()
+        response = self.exec_query(query, debug=debug)
         try:
             r = response[0][0]
         except IndexError:
@@ -940,8 +940,7 @@ class SensorThingsApiDB(PgDatabaseConnector, LoggerSuperclass):
         :return:
         """
         query = "COPY public.\"%s\" FROM '%s' DELIMITER '%s' CSV HEADER;" % (table, filename, delimiter)
-        self.cursor.execute(query)
-        self.connection.commit()
+        self.exec_query(query, fetch=False)
 
     def get_last_observation_id(self):
         """
