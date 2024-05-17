@@ -6,6 +6,6 @@ It also adds specific support for time-series data by extending the database wit
 ### Contact info ###
 
 * **author**: Enoc Martínez  
-* **version**: 0.0.5
+* **version**: 0.0.6
 * **organization**: Universitat Politècnica de Catalunya (UPC)  
 * **contact**: enoc.martinez@upc.edu  
